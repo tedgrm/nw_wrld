@@ -9,14 +9,8 @@ class MathOrbitalMap extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "randomize",
-      autoLoad: false,
-      options: [
-        {
-          name: "randomize",
-          autoLoad: false,
-          options: [],
-        },
-      ],
+      executeOnLoad: false,
+      options: [],
     },
   ];
 

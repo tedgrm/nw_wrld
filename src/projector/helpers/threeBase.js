@@ -28,19 +28,19 @@ export class BaseThreeJsModule extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "zoomLevel",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "zoomLevel",
           defaultVal: 75,
           type: "number",
-          canRandom: true,
+          allowRandomization: true,
         },
       ],
     },
     {
       name: "viewDirection",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "viewDirection",
@@ -52,7 +52,7 @@ export class BaseThreeJsModule extends ModuleBase {
     },
     {
       name: "cameraAnimation",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         {
           name: "cameraAnimation",
@@ -79,7 +79,7 @@ export class BaseThreeJsModule extends ModuleBase {
     },
     {
       name: "cameraSpeed",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "cameraSpeed",

@@ -20,7 +20,7 @@ export const getBaseMethodNames = () => {
     const moduleBaseContent = fs.readFileSync(moduleBasePath, "utf-8");
     const threeBaseContent = fs.readFileSync(threeBasePath, "utf-8");
 
-    const methodRegex = /{\s*name:\s*"([^"]+)",\s*autoLoad:/g;
+    const methodRegex = /{\s*name:\s*"([^"]+)",\s*executeOnLoad:/g;
 
     const moduleBaseMatches = [...moduleBaseContent.matchAll(methodRegex)];
     const threeBaseMatches = [...threeBaseContent.matchAll(methodRegex)];

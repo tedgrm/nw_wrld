@@ -8,7 +8,7 @@ class Text extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "text",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "text",
@@ -19,7 +19,7 @@ class Text extends ModuleBase {
     },
     {
       name: "randomText",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         {
           name: "length",
@@ -36,7 +36,7 @@ class Text extends ModuleBase {
     },
     {
       name: "font",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "font",
@@ -48,7 +48,7 @@ class Text extends ModuleBase {
     },
     {
       name: "color",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "color",
@@ -59,12 +59,12 @@ class Text extends ModuleBase {
     },
     {
       name: "reset",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [],
     },
     {
       name: "size",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "percentage",

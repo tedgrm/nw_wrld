@@ -60,7 +60,7 @@ export const AddModuleModal = ({
         type: module.name,
       });
       const constructorMethods = module.methods
-        .filter((m) => m.autoLoad)
+        .filter((m) => m.executeOnLoad)
         .map((m) => ({
           name: m.name,
           options: m?.options?.length
@@ -107,7 +107,7 @@ export const AddModuleModal = ({
                 {modules.map((module) => {
                   const handlePreview = () => {
                     const constructorMethods = module.methods
-                      .filter((m) => m.autoLoad)
+                      .filter((m) => m.executeOnLoad)
                       .map((m) => ({
                         name: m.name,
                         options: m?.options?.length
@@ -227,4 +227,3 @@ export const AddModuleModal = ({
     </Modal>
   );
 };
-

@@ -8,7 +8,7 @@ class Corners extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "setColor",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "color",
@@ -19,7 +19,7 @@ class Corners extends ModuleBase {
     },
     {
       name: "setSize",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "size",

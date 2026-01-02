@@ -4,40 +4,40 @@ export class ModuleBase {
   static methods = [
     {
       name: "matrix",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
-        { name: "matrix", defaultVal: [1, 1], type: "matrix" },
+        { name: "matrix", defaultVal: { rows: 1, cols: 1, excludedCells: [] }, type: "matrix" },
         { name: "border", defaultVal: false, type: "boolean" },
       ],
     },
     {
       name: "show",
-      autoLoad: true,
-      options: [{ name: "duration", defaultVal: 0, type: "number" }],
+      executeOnLoad: true,
+      options: [{ name: "duration", defaultVal: 0, type: "number", min: 0 }],
     },
     {
       name: "hide",
-      autoLoad: false,
-      options: [{ name: "duration", defaultVal: 0, type: "number" }],
+      executeOnLoad: false,
+      options: [{ name: "duration", defaultVal: 0, type: "number", min: 0 }],
     },
     {
       name: "offset",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
-        { name: "x", defaultVal: 0, type: "number", canRandom: true },
-        { name: "y", defaultVal: 0, type: "number", canRandom: true },
+        { name: "x", defaultVal: 0, type: "number", allowRandomization: true },
+        { name: "y", defaultVal: 0, type: "number", allowRandomization: true },
       ],
     },
     {
       name: "scale",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
-        { name: "scale", defaultVal: 1, type: "number", canRandom: true },
+        { name: "scale", defaultVal: 1, type: "number", allowRandomization: true },
       ],
     },
     {
       name: "randomZoom",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         { name: "scaleFrom", defaultVal: 1, type: "number", min: 0.1 },
         { name: "scaleTo", defaultVal: 2, type: "number", min: 0.1 },
@@ -57,14 +57,14 @@ export class ModuleBase {
     },
     {
       name: "opacity",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         { name: "opacity", defaultVal: 1, type: "number", min: 0, max: 1 },
       ],
     },
     {
       name: "rotate",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         {
           name: "direction",
@@ -76,17 +76,20 @@ export class ModuleBase {
           name: "speed",
           defaultVal: 1,
           type: "number",
+          min: 0.1,
+          max: 100,
         },
         {
           name: "duration",
-          defaultVal: 0, // Duration in milliseconds; 0 means infinite rotation
+          defaultVal: 0,
           type: "number",
+          min: 0,
         },
       ],
     },
     {
       name: "viewportLine",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         {
           name: "x",
@@ -120,7 +123,7 @@ export class ModuleBase {
     },
     {
       name: "background",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         {
           name: "color",
@@ -131,8 +134,8 @@ export class ModuleBase {
     },
     {
       name: "invert",
-      autoLoad: false,
-      options: [{ name: "duration", defaultVal: 0, type: "number" }],
+      executeOnLoad: false,
+      options: [{ name: "duration", defaultVal: 0, type: "number", min: 0 }],
     },
   ];
 

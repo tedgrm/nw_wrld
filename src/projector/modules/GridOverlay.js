@@ -8,25 +8,25 @@ class GridOverlay extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "size",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "x",
           defaultVal: 18,
           type: "number",
-          canRandom: true,
+          allowRandomization: true,
         },
         {
           name: "y",
           defaultVal: 18,
           type: "number",
-          canRandom: true,
+          allowRandomization: true,
         },
       ],
     },
     {
       name: "colour",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "colour",

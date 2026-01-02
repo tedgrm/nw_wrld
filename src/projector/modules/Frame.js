@@ -9,7 +9,7 @@ class Frame extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "setPosition",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "left",
@@ -35,7 +35,7 @@ class Frame extends ModuleBase {
     },
     {
       name: "randomise",
-      autoLoad: false,
+      executeOnLoad: false,
     },
   ];
 

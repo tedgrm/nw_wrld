@@ -41,11 +41,11 @@ export const MethodBlock = React.memo(
     );
 
     const renderInput = (option, currentOption) => {
-      const isRandomized = Array.isArray(currentOption.random);
+      const isRandomized = Array.isArray(currentOption.randomRange);
       const optionDef = moduleMethods
         .find((m) => m.name === method.name)
         ?.options.find((o) => o.name === option.name);
-      const canRandom = optionDef?.canRandom || false;
+      const allowRandomization = optionDef?.allowRandomization || false;
 
       if (mode === "editor") {
         if (option.type === "number") {
@@ -111,7 +111,7 @@ export const MethodBlock = React.memo(
                   <div className="flex flex-col gap-0.5">
                     <div className="text-[9px] text-neutral-300/30">min:</div>
                     <Select
-                      value={currentOption.random[0] ? "true" : "false"}
+                      value={currentOption.randomRange[0] ? "true" : "false"}
                       onChange={(e) =>
                         onRandomRangeChange &&
                         onRandomRangeChange(option.name, 0, e.target.value)
@@ -124,7 +124,7 @@ export const MethodBlock = React.memo(
                   <div className="flex flex-col gap-0.5">
                     <div className="text-[9px] text-neutral-300/30">max:</div>
                     <Select
-                      value={currentOption.random[1] ? "true" : "false"}
+                      value={currentOption.randomRange[1] ? "true" : "false"}
                       onChange={(e) =>
                         onRandomRangeChange &&
                         onRandomRangeChange(option.name, 1, e.target.value)
@@ -140,7 +140,7 @@ export const MethodBlock = React.memo(
                   <div className="flex flex-col gap-0.5">
                     <div className="text-[9px] text-neutral-300/30">min:</div>
                     <NumberInput
-                      value={currentOption.random[0]}
+                      value={currentOption.randomRange[0]}
                       onChange={(e) =>
                         onRandomRangeChange &&
                         onRandomRangeChange(option.name, 0, e.target.value)
@@ -150,7 +150,7 @@ export const MethodBlock = React.memo(
                   <div className="flex flex-col gap-0.5">
                     <div className="text-[9px] text-neutral-300/30">max:</div>
                     <NumberInput
-                      value={currentOption.random[1]}
+                      value={currentOption.randomRange[1]}
                       onChange={(e) =>
                         onRandomRangeChange &&
                         onRandomRangeChange(option.name, 1, e.target.value)
@@ -336,8 +336,8 @@ export const MethodBlock = React.memo(
               const optionDef = moduleMethods
                 .find((m) => m.name === method.name)
                 ?.options.find((o) => o.name === option.name);
-              const canRandom = optionDef?.canRandom || false;
-              const isRandomized = Array.isArray(currentOption.random);
+              const allowRandomization = optionDef?.allowRandomization || false;
+              const isRandomized = Array.isArray(currentOption.randomRange);
 
               return (
                 <div
@@ -346,19 +346,21 @@ export const MethodBlock = React.memo(
                 >
                   <div className="inline-flex items-center font-mono">
                     {option.name}:
-                    {mode === "dashboard" && canRandom && onToggleRandom && (
-                      <FaDice
-                        className={`ml-1.5 cursor-pointer text-[10px] ${
-                          isRandomized
-                            ? "text-neutral-300"
-                            : "text-neutral-300/30"
-                        }`}
-                        onClick={() =>
-                          onToggleRandom(option.name, currentOption.value)
-                        }
-                        title="Toggle Randomization"
-                      />
-                    )}
+                    {mode === "dashboard" &&
+                      allowRandomization &&
+                      onToggleRandom && (
+                        <FaDice
+                          className={`ml-1.5 cursor-pointer text-[10px] ${
+                            isRandomized
+                              ? "text-neutral-300"
+                              : "text-neutral-300/30"
+                          }`}
+                          onClick={() =>
+                            onToggleRandom(option.name, currentOption.value)
+                          }
+                          title="Toggle Randomization"
+                        />
+                      )}
                   </div>
                   {renderInput(option, currentOption)}
                 </div>

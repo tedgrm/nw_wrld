@@ -13,7 +13,7 @@ export class LowEarthPointModule extends BaseThreeJsModule {
     ...BaseThreeJsModule.methods,
     {
       name: "primary",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         {
           name: "duration",

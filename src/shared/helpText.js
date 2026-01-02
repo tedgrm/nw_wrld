@@ -5,8 +5,8 @@ export const HELP_TEXT = {
     "Modules that appear in the Projector window. Create your own in the src/projector/modules directory.",
   methods:
     "Actions a module can perform (e.g., change color, show, hide). Trigger methods via sequencer patterns or external MIDI/OSC.",
-  autoLoadMethods:
-    "Methods with autoLoad: true run automatically when the module loads. Use these for initial setup (colors, text, sizes).",
+  executeOnLoadMethods:
+    "Methods with executeOnLoad: true run automatically when the module loads. Use these for initial setup (colors, text, sizes).",
   aspectRatio:
     "Controls the dimensions of the Projector output. Choose based on your display (9:16 for vertical, landscape for projectors).",
   debugOverlay:

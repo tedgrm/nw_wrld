@@ -8,7 +8,7 @@ class ZKProofVisualizer extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "match",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         {
           name: "matchCount",

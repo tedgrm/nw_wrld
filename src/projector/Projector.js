@@ -742,12 +742,25 @@ const Projector = {
     await Promise.all(
       otherMethods.map(async ({ name: methodName, options: methodOptions }) => {
         const options = fromPairs(
-          map(methodOptions, ({ name, value, random }) => {
-            if (random && Array.isArray(random) && random.length === 2) {
-              const min = random[0];
-              const max = random[1];
+          map(methodOptions, ({ name, value, randomRange }) => {
+            if (randomRange && Array.isArray(randomRange) && randomRange.length === 2) {
+              let [min, max] = randomRange;
+              
+              if (typeof min !== 'number' || typeof max !== 'number') {
+                console.warn(`[Projector] Invalid randomRange for "${name}": [${min}, ${max}] - expected numbers. Using value: ${value}`);
+                return [name, value];
+              }
+              
+              if (min > max) {
+                console.warn(`[Projector] Invalid randomRange for "${name}": min (${min}) > max (${max}). Swapping values.`);
+                [min, max] = [max, min];
+              }
+              
               const randomValue =
-                Math.floor(Math.random() * (max - min + 1)) + min;
+                Number.isInteger(min) && Number.isInteger(max)
+                  ? Math.floor(Math.random() * (max - min + 1)) + min
+                  : Math.random() * (max - min) + min;
+              
               return [name, randomValue];
             }
             return [name, value];
@@ -810,12 +823,21 @@ const Projector = {
       map(methodOptions, ({ name, value }) => [name, value])
     );
 
-    let matrixOptions = { rows: 1, cols: 1, excludedCells: [], border: false }; // Default matrix
-    if (options.matrix && typeof options.matrix === "object") {
+    let matrixOptions = { rows: 1, cols: 1, excludedCells: [], border: false };
+    const m = options.matrix;
+
+    if (Array.isArray(m)) {
       matrixOptions = {
-        rows: options.matrix.rows || 1,
-        cols: options.matrix.cols || 1,
-        excludedCells: options.matrix.excludedCells || [],
+        rows: m[0] || 1,
+        cols: m[1] || 1,
+        excludedCells: [],
+        border: options.border,
+      };
+    } else if (m && typeof m === "object") {
+      matrixOptions = {
+        rows: m.rows || 1,
+        cols: m.cols || 1,
+        excludedCells: m.excludedCells || [],
         border: options.border,
       };
     }

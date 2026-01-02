@@ -240,28 +240,28 @@ Critical for preventing memory leaks and stopping background processes.
 static methods = [
   ...ModuleBase.methods, // Inherit base methods
   {
-    name: "methodName",        // Must match function name
-    autoLoad: true,            // Run on module load?
-    options: [                 // Parameters
+    name: "methodName",            // Must match function name
+    executeOnLoad: true,           // Run on module load?
+    options: [                     // Parameters
       {
-        name: "paramName",     // Parameter name
-        defaultVal: "value",   // Default value
-        type: "text",          // UI control type
-        min: 0,                // (optional) for numbers
-        max: 100,              // (optional) for numbers
-        values: ["a", "b"],    // (optional) for selects
-        canRandom: true,       // (optional) add randomize button
+        name: "paramName",         // Parameter name
+        defaultVal: "value",       // Default value
+        type: "text",              // UI control type
+        min: 0,                    // (optional) for numbers
+        max: 100,                  // (optional) for numbers
+        values: ["a", "b"],        // (optional) for selects
+        allowRandomization: true,  // (optional) add randomize button
       },
     ],
   },
 ];
 ```
 
-### autoLoad Explained
+### executeOnLoad Explained
 
-`autoLoad: true` - Runs automatically when module loads (for initial setup: colors, sizes, text, positions)
+`executeOnLoad: true` - Runs automatically when module loads (for initial setup: colors, sizes, text, positions)
 
-`autoLoad: false` - Waits for sequencer or external trigger (for animations, effects, state changes)
+`executeOnLoad: false` - Waits for sequencer or external trigger (for animations, effects, state changes)
 
 ### Method Naming
 
@@ -282,7 +282,7 @@ static methods = [
 | `color`   | Color picker (hex) | `{ name: "color", defaultVal: "#FF0000", type: "color" }`                             |
 | `boolean` | Toggle switch      | `{ name: "enabled", defaultVal: true, type: "boolean" }`                              |
 | `select`  | Dropdown menu      | `{ name: "mode", defaultVal: "bounce", type: "select", values: ["bounce", "slide"] }` |
-| `matrix`  | Grid position      | `{ name: "position", defaultVal: [1, 1], type: "matrix" }`                            |
+| `matrix`  | Grid position      | `{ name: "position", defaultVal: { rows: 1, cols: 1, excludedCells: [] }, type: "matrix" }` |
 
 All options create UI controls in the Dashboard and pass values to your methods.
 

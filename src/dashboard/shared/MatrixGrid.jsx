@@ -4,6 +4,9 @@ import { NumberInput } from "../components/FormInputs.js";
 export const MatrixGrid = ({ value, onChange }) => {
   const normalizeValue = (val) => {
     if (Array.isArray(val)) {
+      console.warn(
+        "[MatrixGrid] Legacy array format detected, converting to object format"
+      );
       return { rows: val[0] || 1, cols: val[1] || 1, excludedCells: [] };
     }
     return {

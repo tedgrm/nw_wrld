@@ -38,8 +38,8 @@ const SortableItem = React.memo(
         const option = method.options.find((o) => o.name === optionName);
         if (!option) return;
 
-        if (option.random) {
-          changeOption(method.name, optionName, undefined, "random");
+        if (option.randomRange) {
+          changeOption(method.name, optionName, undefined, "randomRange");
         } else {
           const defaultVal =
             typeof option.defaultVal === "boolean"
@@ -53,7 +53,7 @@ const SortableItem = React.memo(
             min = Math.max(defaultVal * 0.8, 0);
             max = defaultVal * 1;
           }
-          changeOption(method.name, optionName, [min, max], "random");
+          changeOption(method.name, optionName, [min, max], "randomRange");
         }
       },
       [method.name, method.options, changeOption]
@@ -62,16 +62,17 @@ const SortableItem = React.memo(
     const handleRandomChange = useCallback(
       (optionName, index, newValue) => {
         const option = method.options.find((o) => o.name === optionName);
-        if (!option || !option.random) return;
+        if (!option || !option.randomRange) return;
 
-        let newRandom;
+        let newRandomRange;
         if (option.type === "boolean") {
-          newRandom = [newValue === "true", newValue === "true"];
+          newRandomRange = [...option.randomRange];
+          newRandomRange[index] = newValue === "true";
         } else {
-          newRandom = [...option.random];
-          newRandom[index] = parseFloat(newValue);
+          newRandomRange = [...option.randomRange];
+          newRandomRange[index] = parseFloat(newValue);
         }
-        changeOption(method.name, optionName, newRandom, "random");
+        changeOption(method.name, optionName, newRandomRange, "randomRange");
       },
       [method.options, method.name, changeOption]
     );

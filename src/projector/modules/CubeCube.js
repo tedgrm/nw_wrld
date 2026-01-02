@@ -10,7 +10,7 @@ export class CubeCube extends BaseThreeJsModule {
     ...BaseThreeJsModule.methods,
     {
       name: "appendCube",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         {
           name: "duration",
@@ -22,7 +22,7 @@ export class CubeCube extends BaseThreeJsModule {
     },
     {
       name: "resetCubes",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [],
     },
   ];

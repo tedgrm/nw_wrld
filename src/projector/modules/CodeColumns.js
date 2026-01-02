@@ -8,12 +8,12 @@ class CodeColumns extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "iterate",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [],
     },
     {
       name: "setColumnVisibility",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "leftColumn",

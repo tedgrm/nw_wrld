@@ -35,7 +35,7 @@ class ${moduleName} extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "exampleMethod",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         {
           name: "param1",
@@ -94,7 +94,7 @@ class ${moduleName} extends BaseThreeJsModule {
     ...BaseThreeJsModule.methods,
     {
       name: "exampleMethod",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         {
           name: "param1",
@@ -165,7 +165,7 @@ class ${moduleName} extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "exampleMethod",
-      autoLoad: false,
+      executeOnLoad: false,
       options: [
         {
           name: "param1",
@@ -330,8 +330,8 @@ export const ModuleEditorModal = ({
     if (!moduleName || !moduleData) return;
 
     try {
-      const autoLoadMethods = moduleData.methods
-        .filter((m) => m.autoLoad)
+      const executeOnLoadMethods = moduleData.methods
+        .filter((m) => m.executeOnLoad)
         .map((m) => ({
           name: m.name,
           options:
@@ -344,7 +344,7 @@ export const ModuleEditorModal = ({
         }));
 
       const showMethod = moduleData.methods.find((m) => m.name === "show");
-      const finalConstructorMethods = [...autoLoadMethods];
+      const finalConstructorMethods = [...executeOnLoadMethods];
 
       if (
         showMethod &&

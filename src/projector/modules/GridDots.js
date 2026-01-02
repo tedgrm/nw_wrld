@@ -8,25 +8,25 @@ class GridDots extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "size",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "x",
           defaultVal: 10,
           type: "number",
-          canRandom: true,
+          allowRandomization: true,
         },
         {
           name: "y",
           defaultVal: 10,
           type: "number",
-          canRandom: false,
+          allowRandomization: false,
         },
       ],
     },
     {
       name: "colour",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "colour",

@@ -10,7 +10,7 @@ class AsteroidGraph extends ModuleBase {
     ...ModuleBase.methods,
     {
       name: "loadMeteors",
-      autoLoad: true,
+      executeOnLoad: true,
       options: [
         {
           name: "count",

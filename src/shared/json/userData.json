@@ -112,10 +112,11 @@
                   "options": [
                     {
                       "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ]
+                      "value": {
+                        "rows": 1,
+                        "cols": 1,
+                        "excludedCells": []
+                      }
                     },
                     {
                       "name": "border",
@@ -190,10 +191,11 @@
                   "options": [
                     {
                       "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ]
+                      "value": {
+                        "rows": 1,
+                        "cols": 1,
+                        "excludedCells": []
+                      }
                     },
                     {
                       "name": "border",
@@ -297,10 +299,11 @@
                   "options": [
                     {
                       "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ]
+                      "value": {
+                        "rows": 1,
+                        "cols": 1,
+                        "excludedCells": []
+                      }
                     },
                     {
                       "name": "border",
@@ -401,10 +404,11 @@
                   "options": [
                     {
                       "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ]
+                      "value": {
+                        "rows": 1,
+                        "cols": 1,
+                        "excludedCells": []
+                      }
                     },
                     {
                       "name": "border",
@@ -476,10 +480,11 @@
                   "options": [
                     {
                       "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ]
+                      "value": {
+                        "rows": 1,
+                        "cols": 1,
+                        "excludedCells": []
+                      }
                     },
                     {
                       "name": "border",
@@ -575,10 +580,11 @@
                   "options": [
                     {
                       "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ]
+                      "value": {
+                        "rows": 1,
+                        "cols": 1,
+                        "excludedCells": []
+                      }
                     },
                     {
                       "name": "border",
@@ -838,10 +844,11 @@
                   "options": [
                     {
                       "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ],
+                      "value": {
+                        "rows": 1,
+                        "cols": 1,
+                        "excludedCells": []
+                      },
                       "defaultVal": [
                         1,
                         1
@@ -938,10 +945,11 @@
                   "options": [
                     {
                       "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ]
+                      "value": {
+                        "rows": 1,
+                        "cols": 1,
+                        "excludedCells": []
+                      }
                     },
                     {
                       "name": "border",
@@ -1006,10 +1014,11 @@
                   "options": [
                     {
                       "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ]
+                      "value": {
+                        "rows": 1,
+                        "cols": 1,
+                        "excludedCells": []
+                      }
                     },
                     {
                       "name": "border",
@@ -1225,167 +1234,6 @@
               "constructor": [
                 5
               ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "set_1767106192009",
-      "name": "test",
-      "tracks": [
-        {
-          "id": 1767106557634,
-          "name": "test",
-          "trackSlot": 1,
-          "bpm": 120,
-          "channelMappings": {},
-          "modules": [
-            {
-              "id": "inst_1767106560445_okm035qu4",
-              "type": "OrbitalPlane"
-            },
-            {
-              "id": "inst_1767106575231_hg7ienx52",
-              "type": "GridDots"
-            }
-          ],
-          "modulesData": {
-            "inst_1767106560445_okm035qu4": {
-              "constructor": [
-                {
-                  "name": "matrix",
-                  "options": [
-                    {
-                      "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ]
-                    },
-                    {
-                      "name": "border",
-                      "value": false
-                    }
-                  ]
-                },
-                {
-                  "name": "show",
-                  "options": [
-                    {
-                      "name": "duration",
-                      "value": 0
-                    }
-                  ]
-                }
-              ],
-              "methods": {}
-            },
-            "inst_1767106575231_hg7ienx52": {
-              "constructor": [
-                {
-                  "name": "matrix",
-                  "options": [
-                    {
-                      "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ]
-                    },
-                    {
-                      "name": "border",
-                      "value": false
-                    }
-                  ]
-                },
-                {
-                  "name": "show",
-                  "options": [
-                    {
-                      "name": "duration",
-                      "value": 0
-                    }
-                  ]
-                },
-                {
-                  "name": "size",
-                  "options": [
-                    {
-                      "name": "x",
-                      "value": 10
-                    },
-                    {
-                      "name": "y",
-                      "value": 10
-                    }
-                  ]
-                },
-                {
-                  "name": "colour",
-                  "options": [
-                    {
-                      "name": "colour",
-                      "value": "#ffffff"
-                    }
-                  ]
-                }
-              ],
-              "methods": {}
-            }
-          }
-        },
-        {
-          "id": 1767106767371,
-          "name": "dddd",
-          "trackSlot": 2,
-          "bpm": 120,
-          "channelMappings": {},
-          "modules": [
-            {
-              "id": "inst_1767106777532_sz0b8oech",
-              "type": "AsteroidGraph"
-            }
-          ],
-          "modulesData": {
-            "inst_1767106777532_sz0b8oech": {
-              "constructor": [
-                {
-                  "name": "matrix",
-                  "options": [
-                    {
-                      "name": "matrix",
-                      "value": [
-                        1,
-                        1
-                      ]
-                    },
-                    {
-                      "name": "border",
-                      "value": false
-                    }
-                  ]
-                },
-                {
-                  "name": "show",
-                  "options": [
-                    {
-                      "name": "duration",
-                      "value": 0
-                    }
-                  ]
-                },
-                {
-                  "name": "loadMeteors",
-                  "options": [
-                    {
-                      "name": "count",
-                      "value": 5
-                    }
-                  ]
-                }
-              ],
-              "methods": {}
             }
           }
         }
