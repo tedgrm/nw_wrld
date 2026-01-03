@@ -45,7 +45,7 @@ export const Button = ({
       {/* [ */}
       <span className="flex items-center gap-1.5">
         {icon && <span className="flex-shrink-0 opacity-75">{icon}</span>}
-        <span>{children}</span>
+        {children && <span>{children}</span>}
       </span>
       {/* ] */}
     </Component>

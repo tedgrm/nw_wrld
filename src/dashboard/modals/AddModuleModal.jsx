@@ -194,36 +194,40 @@ export const AddModuleModal = ({
                       <div className="font-mono text-[11px] text-neutral-300 uppercase flex-1">
                         {module.name}
                       </div>
-                      <div
-                        onMouseEnter={handlePreview}
-                        onMouseLeave={handleClearPreview}
-                        className="cursor-default"
-                      >
+                      <div className="flex items-center gap-3">
                         <div
-                          title="Preview module"
-                          className="cursor-help flex items-center gap-1.5 text-neutral-400"
+                          onMouseEnter={handlePreview}
+                          onMouseLeave={handleClearPreview}
+                          className="cursor-default"
                         >
-                          <FaEye />
+                          <div
+                            title="Preview module"
+                            className="cursor-help flex items-center text-neutral-400"
+                          >
+                            <FaEye />
+                          </div>
                         </div>
+
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onEditModule(module.name);
+                          }}
+                          type="secondary"
+                          icon={<FaCode />}
+                          title="Edit code"
+                          className="text-blue-500/75"
+                        />
+                        <Button
+                          onClick={() => handleAddToTrack(module)}
+                          type="secondary"
+                          icon={<FaPlus />}
+                          title={
+                            track ? "Add to track" : "Select a track first"
+                          }
+                          disabled={!track}
+                        />
                       </div>
-                      <Button
-                        onClick={() => handleAddToTrack(module)}
-                        type="secondary"
-                        icon={<FaPlus />}
-                        title={track ? "Add to track" : "Select a track first"}
-                        className="ml-2"
-                        disabled={!track}
-                      />
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEditModule(module.name);
-                        }}
-                        type="secondary"
-                        icon={<FaCode />}
-                        title="Edit code"
-                        className="text-blue-500/50"
-                      />
                     </div>
                   );
                 })}
