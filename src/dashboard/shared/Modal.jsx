@@ -48,7 +48,9 @@ export const Modal = ({
   return (
     <div
       onClick={handleOverlayClick}
-      className={`fixed top-0 left-0 right-0 bottom-0 z-50 flex ${
+      className={`fixed top-0 left-0 right-0 ${
+        isBottomAligned ? "bottom-[49px]" : "bottom-0"
+      } z-50 flex ${
         isBottomAligned ? "items-end" : "items-center"
       } justify-center font-mono bg-black/80`}
     >
@@ -76,9 +78,11 @@ export const Modal = ({
                 return (
                   <div
                     key={`header-${index}`}
-                    className="flex-shrink-0 p-6 pb-0"
+                    className={`flex-shrink-0 ${
+                      isBottomAligned ? "pb-0 pt-6" : "p-6 pb-0"
+                    }`}
                   >
-                    {child}
+                    {React.cloneElement(child, { isBottomAligned })}
                   </div>
                 );
               }
@@ -86,9 +90,11 @@ export const Modal = ({
                 return (
                   <div
                     key={`footer-${index}`}
-                    className="flex-shrink-0 p-6 pt-0"
+                    className={`flex-shrink-0 ${
+                      isBottomAligned ? "pb-4 pt-0" : "p-6 pt-0"
+                    }`}
                   >
-                    {child}
+                    {React.cloneElement(child, { isBottomAligned })}
                   </div>
                 );
               }

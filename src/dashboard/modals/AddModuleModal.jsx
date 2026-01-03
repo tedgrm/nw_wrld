@@ -6,7 +6,7 @@ import { useIPCSend } from "../core/hooks/useIPC.js";
 import { ModalHeader } from "../components/ModalHeader.js";
 import { Button } from "../components/Button.js";
 import { HelpIcon } from "../components/HelpIcon.js";
-import { activeSetIdAtom } from "../core/state.js";
+import { activeSetIdAtom, activeTrackIdAtom } from "../core/state.js";
 import { updateActiveSet } from "../core/utils.js";
 import { getActiveSetTracks } from "../../shared/utils/setUtils.js";
 import { HELP_TEXT } from "../../shared/helpText.js";
@@ -37,10 +37,19 @@ export const AddModuleModal = ({
   );
 
   const [activeSetId] = useAtom(activeSetIdAtom);
+  const [activeTrackId] = useAtom(activeTrackIdAtom);
   const tracks = getActiveSetTracks(userData, activeSetId);
+
+  const effectiveTrackIndex =
+    trackIndex !== null && trackIndex !== undefined
+      ? trackIndex
+      : mode === "manage-modules" && activeTrackId
+      ? tracks.findIndex((t) => t.id === activeTrackId)
+      : null;
+
   const track =
-    mode === "add-to-track" && trackIndex !== null && trackIndex !== undefined
-      ? tracks?.[trackIndex]
+    effectiveTrackIndex !== null && effectiveTrackIndex !== -1
+      ? tracks?.[effectiveTrackIndex]
       : null;
 
   if (mode === "add-to-track") {
@@ -49,9 +58,11 @@ export const AddModuleModal = ({
   }
 
   const handleAddToTrack = (module) => {
+    if (!track || effectiveTrackIndex === null || effectiveTrackIndex === -1)
+      return;
     sendToProjector("clear-preview", {});
     updateActiveSet(setUserData, activeSetId, (activeSet) => {
-      const track = activeSet.tracks[trackIndex];
+      const track = activeSet.tracks[effectiveTrackIndex];
       const instanceId = `inst_${Date.now()}_${Math.random()
         .toString(36)
         .substr(2, 9)}`;
@@ -195,27 +206,24 @@ export const AddModuleModal = ({
                           <FaEye />
                         </div>
                       </div>
-                      {mode === "add-to-track" && (
-                        <Button
-                          onClick={() => handleAddToTrack(module)}
-                          type="secondary"
-                          icon={<FaPlus />}
-                          title="Add to track"
-                          className="ml-2"
-                        />
-                      )}
-                      {mode === "manage-modules" && (
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onEditModule(module.name);
-                          }}
-                          type="secondary"
-                          icon={<FaCode />}
-                          title="Edit code"
-                          className="ml-2"
-                        />
-                      )}
+                      <Button
+                        onClick={() => handleAddToTrack(module)}
+                        type="secondary"
+                        icon={<FaPlus />}
+                        title={track ? "Add to track" : "Select a track first"}
+                        className="ml-2"
+                        disabled={!track}
+                      />
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEditModule(module.name);
+                        }}
+                        type="secondary"
+                        icon={<FaCode />}
+                        title="Edit code"
+                        className="text-blue-500/50"
+                      />
                     </div>
                   );
                 })}
