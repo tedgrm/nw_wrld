@@ -6,12 +6,12 @@
 
 class HelloWorld extends ModuleBase {
   static methods = [
-    ...((ModuleBase && ModuleBase.methods) || []),
     {
-      name: "setText",
+      name: "text",
       executeOnLoad: true,
       options: [{ name: "text", defaultVal: "Hello world", type: "text" }],
     },
+    ...((ModuleBase && ModuleBase.methods) || []),
   ];
 
   constructor(container) {
@@ -30,14 +30,17 @@ class HelloWorld extends ModuleBase {
     if (this.elem) {
       this.elem.appendChild(this.textEl);
     }
-    this.setText({ text: "Hello world" });
   }
 
-  setText({ text = "Hello world" } = {}) {
+  text({ text = "Hello world" } = {}) {
     if (this.textEl) {
       this.textEl.textContent = String(text);
     }
     this.show();
+  }
+
+  setText(options = {}) {
+    return this.text(options);
   }
 
   destroy() {

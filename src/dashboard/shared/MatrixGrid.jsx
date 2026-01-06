@@ -166,15 +166,30 @@ export const MatrixGrid = ({ value, onChange }) => {
           />
         </div>
       </div>
-      <div
-        style={{
-          display: "grid",
-          gap: "2px",
-          gridTemplateRows: `repeat(${rows}, 14px)`,
-          gridTemplateColumns: `repeat(${cols}, 14px)`,
-        }}
-      >
-        {renderGrid()}
+      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+        <div
+          style={{
+            fontSize: "9px",
+            color: "rgba(217, 217, 217, 0.5)",
+            fontFamily:
+              '"Roboto Mono", "Apple Symbols", "Segoe UI Symbol", "Symbol", monospace',
+          }}
+        >
+          grid (click cells):
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gap: "2px",
+            gridTemplateRows: `repeat(${rows}, 14px)`,
+            gridTemplateColumns: `repeat(${cols}, 14px)`,
+            padding: "6px",
+            border: "1px solid #333",
+            width: "fit-content",
+          }}
+        >
+          {renderGrid()}
+        </div>
       </div>
     </div>
   );

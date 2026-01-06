@@ -6,9 +6,8 @@
 
 class Image extends ModuleBase {
   static methods = [
-    ...((ModuleBase && ModuleBase.methods) || []),
     {
-      name: "setImage",
+      name: "image",
       executeOnLoad: true,
       options: [
         {
@@ -18,6 +17,7 @@ class Image extends ModuleBase {
         },
       ],
     },
+    ...((ModuleBase && ModuleBase.methods) || []),
   ];
 
   constructor(container) {
@@ -38,15 +38,18 @@ class Image extends ModuleBase {
     if (this.elem) {
       this.elem.appendChild(this.img);
     }
-    this.setImage({ path: "images/blueprint.png" });
   }
 
-  setImage({ path = "images/blueprint.png" } = {}) {
+  image({ path = "images/blueprint.png" } = {}) {
     const url = typeof assetUrl === "function" ? assetUrl(path) : null;
     if (this.img && url) {
       this.img.src = url;
     }
     this.show();
+  }
+
+  setImage(options = {}) {
+    return this.image(options);
   }
 
   destroy() {

@@ -143,7 +143,7 @@ class PulsingCircle extends ModuleBase {
       ],
     },
     {
-      name: "setColor",
+      name: "color",
       executeOnLoad: true,
       options: [
         {
@@ -223,7 +223,7 @@ class PulsingCircle extends ModuleBase {
     requestAnimationFrame(animate);
   }
 
-  setColor({ color = "#00FF00" }) {
+  color({ color = "#00FF00" }) {
     this.color = color;
     this.draw();
   }
@@ -350,7 +350,7 @@ static methods = [
 
 ### Method Naming
 
-- Use camelCase: `myMethod`, `setColor`
+- Use camelCase: `myMethod`, `color`
 - Be descriptive
 - Method name in `static methods` must match function name exactly
 
@@ -587,7 +587,7 @@ class ImageModule extends ModuleBase {
   static methods = [
     ...ModuleBase.methods,
     {
-      name: "setImage",
+      name: "image",
       executeOnLoad: true,
       options: [
         {
@@ -611,7 +611,7 @@ class ImageModule extends ModuleBase {
     this.elem.appendChild(this.img);
   }
 
-  setImage({ path = "images/blueprint.png" } = {}) {
+  image({ path = "images/blueprint.png" } = {}) {
     const url = assetUrl(path);
     if (this.img && url) {
       this.img.src = url;
@@ -1090,7 +1090,7 @@ init() {
 
 ### Random Parameters
 
-Add `allowRandomization: true` to any option to enable a randomization button in the UI.
+Add `allowRandomization: true` to any option to enable a randomization button in the UI (select options also support randomization in the Dashboard).
 
 ```javascript
 options: [
@@ -1315,7 +1315,7 @@ async testAssetLoading() {
 3. **Use descriptive names**:
    - Display name: `@nwWrld name: ...`
    - Category: `@nwWrld category: ...`
-   - Method names: Clear, action-oriented (`loadData`, `setColor`, `animate`)
+   - Method names: Clear, action-oriented (`loadData`, `color`, `animate`)
 
 ### Method Design
 

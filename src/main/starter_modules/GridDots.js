@@ -21,9 +21,9 @@ class GridDots extends ModuleBase {
       ],
     },
     {
-      name: "colour",
+      name: "color",
       executeOnLoad: true,
-      options: [{ name: "colour", defaultVal: "#ffffff", type: "color" }],
+      options: [{ name: "color", defaultVal: "#ffffff", type: "color" }],
     },
   ];
 
@@ -33,7 +33,7 @@ class GridDots extends ModuleBase {
     this.gridElem = null;
     this.x = 10;
     this.y = 10;
-    this.dotColour = "#ffffff";
+    this.dotColor = "#ffffff";
     this.init();
   }
 
@@ -53,7 +53,7 @@ class GridDots extends ModuleBase {
     const ctx = this.gridElem.getContext("2d");
     this.elem.style.opacity = 0.5;
 
-    ctx.fillStyle = this.dotColour;
+    ctx.fillStyle = this.dotColor;
 
     const cellWidth = this.gridElem.width / this.x;
     const cellHeight = this.gridElem.height / this.y;
@@ -78,8 +78,8 @@ class GridDots extends ModuleBase {
     this.createGridDots();
   }
 
-  colour({ colour = "#ffffff" } = {}) {
-    this.dotColour = colour;
+  color({ color = "#ffffff" } = {}) {
+    this.dotColor = color;
     this.createGridDots();
   }
 

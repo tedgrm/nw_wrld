@@ -596,26 +596,6 @@ export const ModuleEditorModal = ({
               {moduleName}
             </h2>
           </div>
-          {filePath && (
-            <div className="text-neutral-500 font-mono">
-              <div className="text-[11px]">
-                To edit this module, open file in your code editor:
-              </div>
-              <div>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleOpenInFileExplorer();
-                  }}
-                  className="text-neutral-500 font-mono text-[10px] underline cursor-pointer"
-                  title="Open in File Explorer"
-                >
-                  {filePath}
-                </a>
-              </div>
-            </div>
-          )}
         </div>
         <div className="flex items-center gap-6">
           <Button onClick={handleClose} type="secondary" icon={<FaTimes />}>
@@ -643,7 +623,27 @@ export const ModuleEditorModal = ({
       {/* Footer Panel */}
       <div className="bg-[#101010] border-t border-neutral-700 flex flex-col flex-shrink-0">
         <div className="overflow-x-auto overflow-y-hidden px-6 py-6">
-          {methodsWithValues.length === 0 ? (
+          {filePath && (
+            <div className="text-neutral-500 font-mono">
+              <div className="text-[11px]">
+                To edit this module, open file in your code editor:
+              </div>
+              <div>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleOpenInFileExplorer();
+                  }}
+                  className="text-red-500/50 font-mono text-[10px] underline cursor-pointer"
+                  title="Open in File Explorer"
+                >
+                  {filePath}
+                </a>
+              </div>
+            </div>
+          )}
+          {/* {methodsWithValues.length === 0 ? (
             <div className="text-neutral-500 font-mono text-[10px] py-2">
               No custom methods found
             </div>
@@ -680,7 +680,7 @@ export const ModuleEditorModal = ({
                 ))}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 

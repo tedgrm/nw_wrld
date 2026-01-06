@@ -168,13 +168,21 @@ class ZKProofVisualizer extends ModuleBase {
     requestAnimationFrame(swapWords);
   }
 
-  match({ matchCount = 3 } = {}) {
+  match({ matchCount = 6 } = {}) {
     const column = this.columns[0];
     const allWords = Array.from(column.querySelectorAll(".zkp-column div div"));
+    const parsed = Math.floor(Number(matchCount));
+    const fallback = 6;
+    const requested = Number.isFinite(parsed) ? parsed : fallback;
+    const maxPairs = Math.floor(allWords.length / 2);
+    const safeMatchCount = Math.max(0, Math.min(requested, maxPairs));
     const usedWords = new Set();
     const matches = [];
 
-    while (matches.length < matchCount && usedWords.size < allWords.length) {
+    while (
+      matches.length < safeMatchCount &&
+      usedWords.size < allWords.length
+    ) {
       const word = allWords[Math.floor(Math.random() * allWords.length)];
       const wordText = word.textContent;
 

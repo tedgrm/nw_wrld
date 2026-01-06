@@ -1,13 +1,37 @@
 export const buildMethodOptions = (
   methodOptions,
-  { onInvalidRandomRange, onSwapRandomRange } = {}
+  {
+    onInvalidRandomRange,
+    onSwapRandomRange,
+    noRepeatCache,
+    noRepeatKeyPrefix,
+  } = {}
 ) => {
   const out = {};
   const list = Array.isArray(methodOptions) ? methodOptions : [];
+  const canNoRepeat =
+    noRepeatCache &&
+    typeof noRepeatCache.get === "function" &&
+    typeof noRepeatCache.set === "function" &&
+    typeof noRepeatKeyPrefix === "string" &&
+    noRepeatKeyPrefix.length > 0;
 
   for (const entry of list) {
     const name = entry?.name;
     if (!name) continue;
+
+    const rv = entry?.randomValues;
+    if (Array.isArray(rv) && rv.length > 0) {
+      const key = canNoRepeat ? `${noRepeatKeyPrefix}:${name}:rv` : null;
+      const last = key ? noRepeatCache.get(key) : undefined;
+      const candidates =
+        last !== undefined && rv.length > 1 ? rv.filter((v) => v !== last) : rv;
+      const picked =
+        candidates[Math.floor(Math.random() * Math.max(1, candidates.length))];
+      out[name] = picked;
+      if (key) noRepeatCache.set(key, picked);
+      continue;
+    }
 
     const rr = entry?.randomRange;
     if (rr && Array.isArray(rr) && rr.length === 2) {
@@ -32,10 +56,19 @@ export const buildMethodOptions = (
         [min, max] = [max, min];
       }
 
-      out[name] =
-        Number.isInteger(min) && Number.isInteger(max)
-          ? Math.floor(Math.random() * (max - min + 1)) + min
-          : Math.random() * (max - min) + min;
+      if (Number.isInteger(min) && Number.isInteger(max)) {
+        const key = canNoRepeat ? `${noRepeatKeyPrefix}:${name}:rrInt` : null;
+        const last = key ? noRepeatCache.get(key) : undefined;
+        const range = max - min + 1;
+        let picked = Math.floor(Math.random() * range) + min;
+        if (key && range > 1 && typeof last === "number" && picked === last) {
+          picked = picked < max ? picked + 1 : min;
+        }
+        out[name] = picked;
+        if (key) noRepeatCache.set(key, picked);
+      } else {
+        out[name] = Math.random() * (max - min) + min;
+      }
       continue;
     }
 
@@ -64,8 +97,8 @@ export const parseMatrixOptions = (methodOptions) => {
   }
 
   return {
-    rows: Math.max(1, Number(rows) || 1),
-    cols: Math.max(1, Number(cols) || 1),
+    rows: Math.max(1, Math.min(5, Number(rows) || 1)),
+    cols: Math.max(1, Math.min(5, Number(cols) || 1)),
     excludedCells,
     border,
   };

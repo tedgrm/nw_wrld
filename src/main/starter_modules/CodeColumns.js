@@ -6,14 +6,13 @@
 
 class CodeColumns extends ModuleBase {
   static methods = [
-    ...((ModuleBase && ModuleBase.methods) || []),
     {
       name: "iterate",
       executeOnLoad: false,
       options: [],
     },
     {
-      name: "setColumnVisibility",
+      name: "columnVisibility",
       executeOnLoad: true,
       options: [
         {
@@ -28,6 +27,7 @@ class CodeColumns extends ModuleBase {
         },
       ],
     },
+    ...((ModuleBase && ModuleBase.methods) || []),
   ];
 
   constructor(container) {
@@ -126,13 +126,17 @@ class CodeColumns extends ModuleBase {
     this.generateInitialContent();
   }
 
-  setColumnVisibility({ leftColumn = true, rightColumn = true } = {}) {
+  columnVisibility({ leftColumn = true, rightColumn = true } = {}) {
     if (this.leftColumn) {
       this.leftColumn.style.display = leftColumn ? "block" : "none";
     }
     if (this.rightColumn) {
       this.rightColumn.style.display = rightColumn ? "block" : "none";
     }
+  }
+
+  setColumnVisibility(options = {}) {
+    return this.columnVisibility(options);
   }
 
   destroy() {

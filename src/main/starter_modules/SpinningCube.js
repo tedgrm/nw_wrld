@@ -24,7 +24,6 @@ class SpinningCube extends BaseThreeJsModule {
       this.cube.rotation.x += 0.01;
       this.cube.rotation.y += 0.015;
     });
-    this.show();
   }
 
   destroy() {

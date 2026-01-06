@@ -67,13 +67,13 @@ class Text extends ModuleBase {
         font-size: 100%;
         color: #ffffff;
         text-align: center;
-      ">Sample Text</div>`;
+      ">Hello, world.</div>`;
 
     this.elem.insertAdjacentHTML("beforeend", html);
     this.textElem = this.elem.querySelector("div");
   }
 
-  text({ text = "Hello, world" } = {}) {
+  text({ text = "Hello, world." } = {}) {
     if (this.textElem) {
       this.textElem.textContent = String(text);
     }

@@ -26,6 +26,12 @@ export const MethodBlock = React.memo(
   }) => {
     const [isFlashing, setIsFlashing] = useState(false);
 
+    const coerceNumberInput = useCallback((raw, fallback) => {
+      if (raw === "" || raw === null || raw === undefined) return fallback;
+      const n = Number(raw);
+      return Number.isFinite(n) ? n : fallback;
+    }, []);
+
     const methodOptions = useMemo(
       () => moduleMethods.find((m) => m.name === method.name)?.options || [],
       [moduleMethods, method.name]
@@ -41,7 +47,11 @@ export const MethodBlock = React.memo(
     );
 
     const renderInput = (option, currentOption) => {
-      const isRandomized = Array.isArray(currentOption.randomRange);
+      const isRandomized =
+        Array.isArray(currentOption.randomRange) ||
+        (option.type === "select" &&
+          Array.isArray(currentOption.randomValues) &&
+          currentOption.randomValues.length > 0);
       const optionDef = moduleMethods
         .find((m) => m.name === method.name)
         ?.options.find((o) => o.name === option.name);
@@ -49,12 +59,23 @@ export const MethodBlock = React.memo(
 
       if (mode === "editor") {
         if (option.type === "number") {
+          const fallback =
+            typeof option.defaultVal === "number"
+              ? option.defaultVal
+              : typeof currentOption.value === "number"
+              ? currentOption.value
+              : 0;
           return (
             <NumberInput
               value={currentOption.value}
               min={option.min}
               max={option.max}
-              onChange={(e) => handleOptionChange(option.name, e.target.value)}
+              onChange={(e) =>
+                handleOptionChange(
+                  option.name,
+                  coerceNumberInput(e.target.value, fallback)
+                )
+              }
             />
           );
         } else if (option.type === "select") {
@@ -104,6 +125,98 @@ export const MethodBlock = React.memo(
         }
       } else {
         if (isRandomized) {
+          if (option.type === "select") {
+            const values = Array.isArray(option.values) ? option.values : [];
+            const currentRandomValues = Array.isArray(
+              currentOption.randomValues
+            )
+              ? currentOption.randomValues
+              : [];
+            const randomAll =
+              values.length > 0 &&
+              currentRandomValues.length === values.length &&
+              values.every((v) => currentRandomValues.includes(v));
+            const selectedSet = new Set(currentRandomValues);
+
+            return (
+              <div className="flex flex-col gap-2">
+                <label className="inline-flex items-center gap-2 text-[10px] text-neutral-300/60 font-mono select-none">
+                  <Checkbox
+                    checked={randomAll}
+                    onChange={(e) => {
+                      if (!onRandomRangeChange) return;
+                      if (e.target.checked) {
+                        onRandomRangeChange(
+                          option.name,
+                          [...values],
+                          null,
+                          option
+                        );
+                        return;
+                      }
+                      const fallback = values.includes(currentOption.value)
+                        ? currentOption.value
+                        : values.includes(option.defaultVal)
+                        ? option.defaultVal
+                        : values[0];
+                      onRandomRangeChange(
+                        option.name,
+                        [fallback],
+                        null,
+                        option
+                      );
+                    }}
+                  />
+                  use all values
+                </label>
+
+                <div
+                  className="flex flex-col gap-1 border border-neutral-700"
+                  style={{
+                    width: "160px",
+                    maxHeight: "132px",
+                    overflowY: "auto",
+                    padding: "6px",
+                    opacity: randomAll ? 0.5 : 1,
+                  }}
+                >
+                  {values.map((val) => {
+                    const checked = randomAll ? true : selectedSet.has(val);
+                    return (
+                      <label
+                        key={val}
+                        className="inline-flex items-center gap-2 text-[10px] text-neutral-300/80 font-mono select-none"
+                        style={{
+                          cursor: randomAll ? "not-allowed" : "pointer",
+                        }}
+                      >
+                        <Checkbox
+                          checked={checked}
+                          disabled={randomAll}
+                          onChange={() => {
+                            if (!onRandomRangeChange) return;
+                            if (randomAll) return;
+                            const nextSet = new Set(selectedSet);
+                            if (nextSet.has(val)) nextSet.delete(val);
+                            else nextSet.add(val);
+                            const next = values.filter((v) => nextSet.has(v));
+                            onRandomRangeChange(
+                              option.name,
+                              next,
+                              null,
+                              option
+                            );
+                          }}
+                        />
+                        <span>{val}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }
+
           return (
             <div className="flex gap-2">
               {option.type === "boolean" ? (
@@ -114,7 +227,12 @@ export const MethodBlock = React.memo(
                       value={currentOption.randomRange[0] ? "true" : "false"}
                       onChange={(e) =>
                         onRandomRangeChange &&
-                        onRandomRangeChange(option.name, 0, e.target.value)
+                        onRandomRangeChange(
+                          option.name,
+                          0,
+                          e.target.value,
+                          option
+                        )
                       }
                     >
                       <option value="true">True</option>
@@ -127,7 +245,12 @@ export const MethodBlock = React.memo(
                       value={currentOption.randomRange[1] ? "true" : "false"}
                       onChange={(e) =>
                         onRandomRangeChange &&
-                        onRandomRangeChange(option.name, 1, e.target.value)
+                        onRandomRangeChange(
+                          option.name,
+                          1,
+                          e.target.value,
+                          option
+                        )
                       }
                     >
                       <option value="true">True</option>
@@ -143,7 +266,12 @@ export const MethodBlock = React.memo(
                       value={currentOption.randomRange[0]}
                       onChange={(e) =>
                         onRandomRangeChange &&
-                        onRandomRangeChange(option.name, 0, e.target.value)
+                        onRandomRangeChange(
+                          option.name,
+                          0,
+                          e.target.value,
+                          option
+                        )
                       }
                     />
                   </div>
@@ -153,7 +281,12 @@ export const MethodBlock = React.memo(
                       value={currentOption.randomRange[1]}
                       onChange={(e) =>
                         onRandomRangeChange &&
-                        onRandomRangeChange(option.name, 1, e.target.value)
+                        onRandomRangeChange(
+                          option.name,
+                          1,
+                          e.target.value,
+                          option
+                        )
                       }
                     />
                   </div>
@@ -162,12 +295,23 @@ export const MethodBlock = React.memo(
             </div>
           );
         } else if (option.type === "number") {
+          const fallback =
+            typeof option.defaultVal === "number"
+              ? option.defaultVal
+              : typeof currentOption.value === "number"
+              ? currentOption.value
+              : 0;
           return (
             <NumberInput
               value={currentOption.value}
               min={option.min}
               max={option.max}
-              onChange={(e) => handleOptionChange(option.name, e.target.value)}
+              onChange={(e) =>
+                handleOptionChange(
+                  option.name,
+                  coerceNumberInput(e.target.value, fallback)
+                )
+              }
             />
           );
         } else if (option.type === "select") {
@@ -181,9 +325,6 @@ export const MethodBlock = React.memo(
                   {val}
                 </option>
               ))}
-              <option value="random" className="bg-[#101010]">
-                random
-              </option>
             </Select>
           );
         } else if (option.type === "text") {
@@ -250,19 +391,6 @@ export const MethodBlock = React.memo(
             </span>
 
             <div className="flex items-center gap-2">
-              {mode === "dashboard" && moduleName && onShowCode && (
-                <div
-                  className="px-1 text-neutral-300/50 cursor-pointer text-[11px] bg-[#101010]"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onShowCode(method.name);
-                  }}
-                  onMouseDown={(e) => e.stopPropagation()}
-                  title="View Method Code"
-                >
-                  <FaCode className="text-[10px]" />
-                </div>
-              )}
               {mode === "dashboard" && onRemove && (
                 <div
                   className="px-1 text-red-500/50 cursor-pointer text-[11px] bg-[#101010]"
@@ -297,11 +425,13 @@ export const MethodBlock = React.memo(
           </div>
 
           <div
-            className={`pt-2 grid gap-4 font-mono ${
+            className={`pt-2 grid gap-4 font-mono min-w-max ${
               methodOptions?.length === 1
                 ? "grid-cols-1"
                 : methodOptions?.length >= 2
-                ? "grid-cols-2"
+                ? method.name === "matrix"
+                  ? "grid-cols-[max-content_max-content]"
+                  : "grid-cols-2"
                 : "grid-cols-1"
             }`}
           >
@@ -337,7 +467,15 @@ export const MethodBlock = React.memo(
                 .find((m) => m.name === method.name)
                 ?.options.find((o) => o.name === option.name);
               const allowRandomization = optionDef?.allowRandomization || false;
-              const isRandomized = Array.isArray(currentOption.randomRange);
+              const isRandomized =
+                Array.isArray(currentOption.randomRange) ||
+                (option.type === "select" &&
+                  Array.isArray(currentOption.randomValues) &&
+                  currentOption.randomValues.length > 0);
+              const showDice =
+                mode === "dashboard" &&
+                onToggleRandom &&
+                (allowRandomization || option.type === "select");
 
               return (
                 <div
@@ -346,21 +484,17 @@ export const MethodBlock = React.memo(
                 >
                   <div className="inline-flex items-center font-mono">
                     {option.name}:
-                    {mode === "dashboard" &&
-                      allowRandomization &&
-                      onToggleRandom && (
-                        <FaDice
-                          className={`ml-1.5 cursor-pointer text-[10px] ${
-                            isRandomized
-                              ? "text-neutral-300"
-                              : "text-neutral-300/30"
-                          }`}
-                          onClick={() =>
-                            onToggleRandom(option.name, currentOption.value)
-                          }
-                          title="Toggle Randomization"
-                        />
-                      )}
+                    {mode === "dashboard" && showDice && (
+                      <FaDice
+                        className={`ml-1.5 cursor-pointer text-[10px] ${
+                          isRandomized
+                            ? "text-neutral-300"
+                            : "text-neutral-300/30"
+                        }`}
+                        onClick={() => onToggleRandom(option.name, option)}
+                        title="Toggle Randomization"
+                      />
+                    )}
                   </div>
                   {renderInput(option, currentOption)}
                 </div>

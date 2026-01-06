@@ -15,9 +15,8 @@ const randomInt = (min, max) => {
 
 class Frame extends ModuleBase {
   static methods = [
-    ...((ModuleBase && ModuleBase.methods) || []),
     {
-      name: "setPosition",
+      name: "position",
       executeOnLoad: true,
       options: [
         {
@@ -43,16 +42,17 @@ class Frame extends ModuleBase {
       ],
     },
     {
-      name: "randomise",
+      name: "randomize",
       executeOnLoad: false,
     },
+    ...((ModuleBase && ModuleBase.methods) || []),
   ];
 
   constructor(container) {
     super(container);
     this.name = Frame.name;
     this.positionOptions = {
-      left: false,
+      left: true,
       right: false,
       top: false,
       bottom: false,
@@ -71,6 +71,7 @@ class Frame extends ModuleBase {
     this.elem.appendChild(this.canvas);
     this.canvas.className = "frame";
 
+    this.updatePosition();
     this.drawFrame();
   }
 
@@ -216,15 +217,14 @@ class Frame extends ModuleBase {
     this.ctx.restore();
   }
 
-  setPosition({
-    left = false,
-    right = false,
-    top = false,
-    bottom = false,
-  } = {}) {
+  position({ left = true, right = false, top = false, bottom = false } = {}) {
     this.positionOptions = { left, right, top, bottom };
     this.updatePosition();
-    this.randomise();
+    this.randomize();
+  }
+
+  setPosition(options = {}) {
+    return this.position(options);
   }
 
   updatePosition() {
@@ -238,9 +238,13 @@ class Frame extends ModuleBase {
     Object.assign(this.canvas.style, styles);
   }
 
-  randomise() {
+  randomize() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawFrame();
+  }
+
+  randomise(options = {}) {
+    return this.randomize(options);
   }
 
   destroy() {

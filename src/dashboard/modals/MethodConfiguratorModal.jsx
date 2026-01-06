@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import { useAtom } from "jotai";
 import { remove } from "lodash";
 import { useIPCSend } from "../core/hooks/useIPC.js";
@@ -37,43 +43,84 @@ const SortableItem = React.memo(
     onShowMethodCode,
   }) => {
     const toggleRandomization = useCallback(
-      (optionName, currentValue) => {
+      (optionName, optionDef = null) => {
         const option = method.options.find((o) => o.name === optionName);
         if (!option) return;
 
+        const type = optionDef?.type || null;
+        if (type === "select") {
+          if (
+            Array.isArray(option.randomValues) &&
+            option.randomValues.length
+          ) {
+            changeOption(method.name, optionName, undefined, "randomValues");
+            return;
+          }
+          const values = Array.isArray(optionDef?.values)
+            ? optionDef.values
+            : [];
+          if (!values.length) return;
+          changeOption(method.name, optionName, [...values], "randomValues");
+          return;
+        }
+
         if (option.randomRange) {
           changeOption(method.name, optionName, undefined, "randomRange");
-        } else {
-          const defaultVal =
-            typeof option.defaultVal === "boolean"
-              ? option.defaultVal
-              : parseFloat(option.defaultVal);
-          let min, max;
-          if (typeof defaultVal === "boolean") {
-            min = false;
-            max = true;
-          } else {
-            min = Math.max(defaultVal * 0.8, 0);
-            max = defaultVal * 1;
-          }
-          changeOption(method.name, optionName, [min, max], "randomRange");
+          return;
         }
+
+        const defaultVal =
+          typeof optionDef?.defaultVal === "boolean"
+            ? optionDef.defaultVal
+            : typeof optionDef?.defaultVal === "number"
+            ? optionDef.defaultVal
+            : typeof option.defaultVal === "boolean"
+            ? option.defaultVal
+            : parseFloat(option.defaultVal);
+
+        let min, max;
+        if (typeof defaultVal === "boolean") {
+          min = false;
+          max = true;
+        } else {
+          min = Math.max(defaultVal * 0.8, 0);
+          max = defaultVal * 1;
+        }
+        changeOption(method.name, optionName, [min, max], "randomRange");
       },
       [method.name, method.options, changeOption]
     );
 
     const handleRandomChange = useCallback(
-      (optionName, index, newValue) => {
+      (optionName, indexOrValues, newValue, optionDef = null) => {
         const option = method.options.find((o) => o.name === optionName);
-        if (!option || !option.randomRange) return;
+        if (!option) return;
+
+        const type = optionDef?.type || null;
+        if (type === "select") {
+          const values = Array.isArray(optionDef?.values)
+            ? optionDef.values
+            : [];
+          if (!values.length) return;
+          if (!Array.isArray(indexOrValues)) return;
+          const selected = values.filter((v) => indexOrValues.includes(v));
+          if (selected.length === 0) {
+            changeOption(method.name, optionName, undefined, "randomValues");
+          } else {
+            changeOption(method.name, optionName, selected, "randomValues");
+          }
+          return;
+        }
+
+        if (!option.randomRange) return;
 
         let newRandomRange;
-        if (option.type === "boolean") {
+        if (type === "boolean") {
           newRandomRange = [...option.randomRange];
-          newRandomRange[index] = newValue === "true";
+          newRandomRange[indexOrValues] = newValue === "true";
         } else {
           newRandomRange = [...option.randomRange];
-          newRandomRange[index] = parseFloat(newValue);
+          newRandomRange[indexOrValues] = parseFloat(newValue);
         }
         changeOption(method.name, optionName, newRandomRange, "randomRange");
       },
@@ -101,8 +148,12 @@ const SortableItem = React.memo(
                 onRemove={handleRemoveMethod}
                 onShowCode={onShowMethodCode}
                 onOptionChange={handleOptionChange}
-                onToggleRandom={toggleRandomization}
-                onRandomRangeChange={handleRandomChange}
+                onToggleRandom={(optionName, optionDef) =>
+                  toggleRandomization(optionName, optionDef)
+                }
+                onRandomRangeChange={(optionName, index, newValue, optionDef) =>
+                  handleRandomChange(optionName, index, newValue, optionDef)
+                }
                 onAddMissingOption={addMissingOption}
               />
             </div>
@@ -136,6 +187,7 @@ export const MethodConfiguratorModal = ({
   const [selectedMethodForCode, setSelectedMethodForCode] = useState(null);
   const sendToProjector = useIPCSend("dashboard-to-projector");
   const { moduleBase, threeBase } = useMemo(() => getBaseMethodNames(), []);
+  const lastNormalizedKeyRef = useRef(null);
 
   const module = useMemo(() => {
     if (!selectedChannel) return null;
@@ -189,6 +241,205 @@ export const MethodConfiguratorModal = ({
     selectedChannel?.moduleType,
     sendToProjector,
   ]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    if (!selectedChannel) return;
+    if (
+      !module ||
+      !Array.isArray(module.methods) ||
+      module.methods.length === 0
+    )
+      return;
+
+    const channelKey = selectedChannel.isConstructor
+      ? "constructor"
+      : String(selectedChannel.channelNumber);
+    const key = `${activeSetId || "no_set"}:${selectedChannel.trackIndex}:${
+      selectedChannel.instanceId
+    }:${channelKey}:${selectedChannel.moduleType || ""}`;
+    if (lastNormalizedKeyRef.current === key) return;
+
+    updateActiveSet(setUserData, activeSetId, (activeSet) => {
+      const track = activeSet.tracks[selectedChannel.trackIndex];
+      if (!track?.modulesData?.[selectedChannel.instanceId]) return;
+      const methodList = selectedChannel.isConstructor
+        ? track.modulesData[selectedChannel.instanceId].constructor
+        : track.modulesData[selectedChannel.instanceId].methods[channelKey] ||
+          [];
+      if (!Array.isArray(methodList) || methodList.length === 0) return;
+
+      let changed = false;
+
+      const clampNumber = (n, min, max) => {
+        let out = n;
+        if (typeof min === "number") out = Math.max(min, out);
+        if (typeof max === "number") out = Math.min(max, out);
+        return out;
+      };
+
+      for (const m of methodList) {
+        if (!m?.name || !Array.isArray(m.options)) continue;
+        const methodDef = module.methods.find((mm) => mm?.name === m.name);
+        if (!methodDef || !Array.isArray(methodDef.options)) continue;
+
+        for (const opt of m.options) {
+          if (!opt?.name) continue;
+          const optDef = methodDef.options.find((oo) => oo?.name === opt.name);
+          if (!optDef) continue;
+
+          if (optDef.type === "number") {
+            if (typeof opt.value === "string") {
+              const n = Number(opt.value);
+              const next = Number.isFinite(n)
+                ? clampNumber(n, optDef.min, optDef.max)
+                : optDef.defaultVal;
+              if (opt.value !== next) {
+                opt.value = next;
+                changed = true;
+              }
+            }
+            if (
+              Array.isArray(opt.randomRange) &&
+              opt.randomRange.length === 2
+            ) {
+              const [a, b] = opt.randomRange;
+              const na = typeof a === "number" ? a : Number(a);
+              const nb = typeof b === "number" ? b : Number(b);
+              if (Number.isFinite(na) && Number.isFinite(nb)) {
+                const next = [
+                  clampNumber(na, optDef.min, optDef.max),
+                  clampNumber(nb, optDef.min, optDef.max),
+                ];
+                if (
+                  opt.randomRange[0] !== next[0] ||
+                  opt.randomRange[1] !== next[1]
+                ) {
+                  opt.randomRange = next;
+                  changed = true;
+                }
+              } else {
+                delete opt.randomRange;
+                changed = true;
+              }
+            }
+          }
+
+          if (optDef.type === "boolean") {
+            if (typeof opt.value !== "boolean") {
+              const next =
+                opt.value === "true"
+                  ? true
+                  : opt.value === "false"
+                  ? false
+                  : optDef.defaultVal;
+              if (opt.value !== next) {
+                opt.value = next;
+                changed = true;
+              }
+            }
+          }
+
+          if (optDef.type === "select") {
+            const values = Array.isArray(optDef.values) ? optDef.values : [];
+            if (opt.value === "random") {
+              if (values.length > 0) {
+                opt.randomValues = [...values];
+              }
+              opt.value = optDef.defaultVal;
+              changed = true;
+            }
+
+            if (opt.randomValues !== undefined) {
+              if (!Array.isArray(opt.randomValues)) {
+                delete opt.randomValues;
+                changed = true;
+              } else if (values.length > 0) {
+                const set = new Set(opt.randomValues);
+                const filtered = values.filter((v) => set.has(v));
+                if (filtered.length === 0) {
+                  delete opt.randomValues;
+                  changed = true;
+                } else {
+                  const sameLength =
+                    filtered.length === opt.randomValues.length;
+                  const sameOrder =
+                    sameLength &&
+                    filtered.every((v, i) => opt.randomValues[i] === v);
+                  if (!sameOrder) {
+                    opt.randomValues = filtered;
+                    changed = true;
+                  }
+                }
+              }
+            }
+
+            if (
+              opt.randomValues === undefined &&
+              values.length > 0 &&
+              typeof opt.value === "string" &&
+              !values.includes(opt.value)
+            ) {
+              opt.value = optDef.defaultVal;
+              changed = true;
+            }
+          }
+
+          if (optDef.type === "matrix") {
+            const v = opt.value;
+            let rows = 1;
+            let cols = 1;
+            let excludedCells = [];
+            if (Array.isArray(v)) {
+              rows = v[0] || 1;
+              cols = v[1] || 1;
+            } else if (v && typeof v === "object") {
+              rows = v.rows || 1;
+              cols = v.cols || 1;
+              excludedCells = Array.isArray(v.excludedCells)
+                ? v.excludedCells
+                : [];
+            }
+
+            const nextRows = Math.max(1, Math.min(5, Number(rows) || 1));
+            const nextCols = Math.max(1, Math.min(5, Number(cols) || 1));
+            const nextExcluded = excludedCells.filter((key) => {
+              const [r, c] = String(key).split("-").map(Number);
+              return (
+                Number.isFinite(r) &&
+                Number.isFinite(c) &&
+                r >= 1 &&
+                c >= 1 &&
+                r <= nextRows &&
+                c <= nextCols
+              );
+            });
+            const next = {
+              rows: nextRows,
+              cols: nextCols,
+              excludedCells: nextExcluded,
+            };
+            const same =
+              v &&
+              typeof v === "object" &&
+              v.rows === nextRows &&
+              v.cols === nextCols &&
+              Array.isArray(v.excludedCells) &&
+              v.excludedCells.length === nextExcluded.length &&
+              v.excludedCells.every((x, i) => x === nextExcluded[i]);
+            if (!same) {
+              opt.value = next;
+              changed = true;
+            }
+          }
+        }
+      }
+
+      if (!changed) return;
+    });
+
+    lastNormalizedKeyRef.current = key;
+  }, [isOpen, selectedChannel, module, activeSetId, setUserData]);
 
   const methodConfigs = useMemo(() => {
     if (!selectedChannel) return [];

@@ -95,6 +95,7 @@ const Projector = {
   activeChannelHandlers: {},
   moduleClassCache: new Map(),
   workspaceModuleSourceCache: new Map(),
+  methodOptionNoRepeatCache: new Map(),
   assetsBaseUrl: null,
   trackSandboxHost: null,
   trackModuleSources: null,
@@ -1115,6 +1116,8 @@ const Projector = {
               );
             }
           },
+          noRepeatCache: this.methodOptionNoRepeatCache,
+          noRepeatKeyPrefix: `${instanceId}:${methodName}`,
         });
 
         if (overlayDebug) {
