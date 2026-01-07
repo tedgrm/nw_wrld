@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { FaCode, FaDice, FaPlay } from "react-icons/fa";
+import { FaCode, FaDice, FaLock, FaPlay } from "react-icons/fa";
 import {
   TextInput,
   NumberInput,
@@ -483,6 +483,8 @@ export const MethodBlock = React.memo(
                 dragHandleProps &&
                 method.name !== "matrix"
                   ? "cursor-move"
+                  : method.name === "matrix"
+                  ? "cursor-not-allowed"
                   : "cursor-default"
               }`}
               {...(mode === "dashboard" && dragHandleProps
@@ -491,6 +493,14 @@ export const MethodBlock = React.memo(
             >
               {mode === "dashboard" && method.name !== "matrix" && (
                 <span className="text-md text-neutral-300">{"\u2261 "}</span>
+              )}
+              {mode === "dashboard" && method.name === "matrix" && (
+                <span
+                  className="inline-flex items-center text-[11px] text-neutral-300/60"
+                  title="Not movable"
+                >
+                  <FaLock className="text-[10px] mr-1" />
+                </span>
               )}
               <span className="opacity-80">{method.name}</span>
             </span>
