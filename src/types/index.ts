@@ -27,6 +27,30 @@ export type {
 } from "./config";
 export type { ModuleMetadata } from "./moduleMetadata";
 export type {
+  InputEventPayload,
+  InputSource,
+  InputStatus,
+  InputStatusData,
+  InputStatusPayload,
+  MidiDeviceInfo,
+} from "./input";
+export type {
+  DashboardToProjectorMessage,
+  DashboardToProjectorMessageMap,
+  ProjectorToDashboardMessage,
+  ProjectorToDashboardMessageMap,
+  TypedMessage,
+} from "./messaging";
+export type {
+  MethodDefinition,
+  MethodOptionDefinition,
+  MethodOptionType,
+  ModuleIntrospectErr,
+  ModuleIntrospectOk,
+  ModuleIntrospectResult,
+  PreviewModuleData,
+} from "./moduleMethods";
+export type {
   ListAssetsResult,
   WorkspaceModuleSummary,
   WorkspaceModuleTextWithMeta,

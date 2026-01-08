@@ -57,6 +57,12 @@ export interface ModuleRef {
 export interface MethodOption {
   name: string;
   value: JsonValue;
+  randomValues?: JsonValue[];
+  randomRange?:
+    | [number, number]
+    | [string, string]
+    | [number | string, number | string];
+  randomizeFromUserColors?: boolean;
 }
 
 export interface MethodBlock {

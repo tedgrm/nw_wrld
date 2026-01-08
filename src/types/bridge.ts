@@ -5,6 +5,18 @@ import type {
   WorkspaceModuleUrl,
 } from "./workspace";
 import type { SandboxEnsureResult, SandboxRequestType } from "./sandbox";
+import type { InputConfig } from "./userData";
+import type {
+  InputEventPayload,
+  InputStatusPayload,
+  MidiDeviceInfo,
+} from "./input";
+import type {
+  DashboardToProjectorMessageMap,
+  ProjectorToDashboardMessageMap,
+  DashboardToProjectorMessage,
+  ProjectorToDashboardMessage,
+} from "./messaging";
 
 export interface NwWrldBridge {
   project: {
@@ -56,19 +68,25 @@ export interface NwWrldBridge {
     isPackaged: () => boolean;
   };
   messaging: {
-    sendToProjector: (type: string, props?: Record<string, unknown>) => void;
-    sendToDashboard: (type: string, props?: Record<string, unknown>) => void;
+    sendToProjector: <T extends keyof DashboardToProjectorMessageMap>(
+      type: T,
+      props: DashboardToProjectorMessageMap[T]
+    ) => void;
+    sendToDashboard: <T extends keyof ProjectorToDashboardMessageMap>(
+      type: T,
+      props: ProjectorToDashboardMessageMap[T]
+    ) => void;
     onFromProjector: (
-      handler: (event: unknown, data: unknown) => void
+      handler: (event: unknown, data: ProjectorToDashboardMessage) => void
     ) => void | (() => void);
     onFromDashboard: (
-      handler: (event: unknown, data: unknown) => void
+      handler: (event: unknown, data: DashboardToProjectorMessage) => void
     ) => void | (() => void);
     onInputEvent: (
-      handler: (event: unknown, payload: unknown) => void
+      handler: (event: unknown, payload: InputEventPayload) => void
     ) => void | (() => void);
     onInputStatus: (
-      handler: (event: unknown, payload: unknown) => void
+      handler: (event: unknown, payload: InputStatusPayload) => void
     ) => void | (() => void);
     onWorkspaceModulesChanged: (
       handler: (event: unknown, payload: unknown) => void
@@ -76,8 +94,8 @@ export interface NwWrldBridge {
     onWorkspaceLostSync: (
       handler: (event: unknown, payload: unknown) => void
     ) => void | (() => void);
-    configureInput: (payload: unknown) => Promise<unknown>;
-    getMidiDevices: () => Promise<unknown>;
+    configureInput: (payload: InputConfig) => Promise<{ success: true }>;
+    getMidiDevices: () => Promise<MidiDeviceInfo[]>;
     selectWorkspace: () => Promise<unknown>;
   };
 }
